@@ -52,13 +52,18 @@ export default function () {
     yaxis: {
         type: "numeric",
         min: 0,
-        max: 18000,
+        max: 19000,
         title: {
             // rotate: -90,
             text: "Confirmed Cases",
             style: {
                 fontSize: "14px",
                 cssClass: 'apexcharts-yaxis-title',
+            }
+        },
+        labels: {
+            formatter: function(val) {
+                return val.toFixed(0);
             }
         }
     },
