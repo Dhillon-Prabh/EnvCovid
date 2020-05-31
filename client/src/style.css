@@ -40,3 +40,7 @@ path:hover {
 .map {
     width: 100%;
 }
+
+.apexcharts-yaxis-title {
+    margin: 0 100px 0;
+}

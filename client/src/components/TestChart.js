@@ -16,7 +16,7 @@ export default function () {
   const [series, setSeries] = useState([
     {
       name: "",
-      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      data: [],
     },
   ]);
   const [options, setOptions] = useState({
@@ -30,33 +30,41 @@ export default function () {
     stroke: {
       curve: "smooth",
     },
+    title: {
+        text: "Temperature VS Infection Rate",
+        align: "left"
+    },
     xaxis: {
-      type: "datetime",
-      categories: [
-        "2018-09-19T00:00:00.000Z",
-        "2018-09-19T01:30:00.000Z",
-        "2018-09-19T02:30:00.000Z",
-        "2018-09-19T03:30:00.000Z",
-        "2018-09-19T04:30:00.000Z",
-        "2018-09-19T05:30:00.000Z",
-        "2018-09-19T06:30:00.000Z",
-        "2018-09-19T07:00:00.000Z",
-        "2018-09-19T07:30:00.000Z",
-        "2018-09-19T08:00:00.000Z",
-        "2018-09-19T08:30:00.000Z",
-        "2018-09-19T09:00:00.000Z",
-        "2018-09-19T09:30:00.000Z",
-        "2018-09-19T10:00:00.000Z",
-        "2018-09-19T10:30:00.000Z",
-        "2018-09-19T11:00:00.000Z",
-        "2018-09-19T11:30:00.000Z",
-      ],
+        type: "numeric",
+        min: 0,
+        max: 65,
+        tickAmount: 1,
+        labels: {
+            show: true
+        },
+        title: {
+            text: "Temperature",
+            style: {
+                fontSize: "14px",
+            }
+        }
     },
-    tooltip: {
-      x: {
-        format: "dd/MM/yy HH:mm",
-      },
+    yaxis: {
+        type: "numeric",
+        min: 0,
+        max: 18000,
+        title: {
+            // rotate: -90,
+            text: "Confirmed Cases",
+            style: {
+                fontSize: "14px",
+                cssClass: 'apexcharts-yaxis-title',
+            }
+        }
     },
+    legend: {
+        show: false
+    }
   });
 
   const handleForce = (data, fileInfo) => {
@@ -65,27 +73,40 @@ export default function () {
     let map = new Map();
     data.map((countyInfo) =>
       map.has(countyInfo.name)
-        ? map.get(countyInfo.name).push({ date: countyInfo.date, avgTemp: 18 })
-        : (map.set(countyInfo.name, [{ date: countyInfo.date, avgTemp: 10 }]),
+        ? map
+            .get(countyInfo.name)
+            .push({ temp: countyInfo.temp, avgCase: countyInfo.avg_case })
+        : (map.set(countyInfo.name, [
+            { temp: countyInfo.temp, avgCase: countyInfo.avg_case },
+          ]),
           setplaceName((placeName) => [...placeName, countyInfo.name]))
     );
     setData(map);
-    console.log("place name array");
-    console.log(placeName);
 
     // Set graph information
-    const targetCounty = map.get("NY CITY CENTRAL PARK, NY US");
+    const targetCounty = map.get("15 States");
+    console.log(targetCounty);
     let getTemperature = (county) => {
-      let temperature = county.avgTemp;
+      let temperature = county.temp;
       return temperature;
     };
 
+    let getAvgCase = (county) => {
+        let avgCase = county.avgCase;
+        return avgCase;
+      };
+
     let targetCountyTemp = targetCounty.map(getTemperature);
+    let targetCountyAvgCase = targetCounty.map(getAvgCase);
     console.log(targetCountyTemp);
     setSeries([
       {
         name: "Temperature",
         data: targetCountyTemp,
+      },
+      {
+        name: "Average Case",
+        data: targetCountyAvgCase,
       },
     ]);
   };
@@ -126,9 +147,9 @@ export default function () {
           type="area"
           height={350}
         />
-        <select>
+        {/* <select>
           {placeName && placeName.map((name) => <option> {name}</option>)}
-        </select>
+        </select> */}
       </div>
       <div className="map_container">
         {/* <USAMap width="60%" onClick={(e) => showInfo(e)} /> */}
