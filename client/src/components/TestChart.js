@@ -37,7 +37,6 @@ export default function () {
     xaxis: {
         type: "numeric",
         min: 0,
-        max: 65,
         tickAmount: 1,
         labels: {
             show: true
@@ -52,7 +51,6 @@ export default function () {
     yaxis: {
         type: "numeric",
         min: 0,
-        max: 19000,
         title: {
             // rotate: -90,
             text: "Confirmed Cases",
